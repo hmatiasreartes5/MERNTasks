@@ -13,7 +13,7 @@ const ListadoProyectos = () => {
     },[])
 
     //validar si proyectos esta vacio
-    if(proyectos.length === 0) return null;
+    if(proyectos.length === 0) return <h1 className="proyectos">No hay Proyectos, comienza creando uno</h1>;
 
     return (  
         <ul className="listado-proyectos">
