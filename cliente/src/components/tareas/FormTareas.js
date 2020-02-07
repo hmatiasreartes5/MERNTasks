@@ -1,5 +1,6 @@
-import React,{useContext} from 'react';
+import React,{useContext,useState} from 'react';
 import proyectoContext from '../../context/proyectos/proyectoContext';
+import tareaContext from '../../context/tareas/tareaContext';
 
 const FormTareas = () => {
 
@@ -7,21 +8,53 @@ const FormTareas = () => {
     const proyectosContext = useContext(proyectoContext);
     const {proyecto} = proyectosContext 
 
+    //obtener las tareas del proyecto
+    const tareasContext = useContext(tareaContext);
+    const {errortarea,agregarTarea,validarTarea,obtenerTareas} =  tareasContext;
+
+    //State de FormTareas
+    const [tarea, guardarTarea] = useState({
+        nombre: ''
+    })
+
+    //extraigo los valores del state
+    const {nombre} = tarea;
+
     //si no hay proyecto seleccionado
     if(!proyecto) return null;
 
     //Aplico Array Destructuring para poder extraer el proyecto actual
     const [proyectoActual] = proyecto
 
+    const handlChange = e => {
+        guardarTarea({
+            ...tarea,
+            [e.target.name] : e.target.value
+        })
+    }
+
     //Cuando el usuario agrege una nueva tarea
     const onSubmit = e => {
         e.preventDefault();
          
         //Validacion
+        if(nombre.trim() === ''){
+            validarTarea();
+            return;
+        }
 
         //agregar la nueva tarea al state de tareaState
+        tarea.proyectoId = proyectoActual.id;
+        tarea.estado = false
+        agregarTarea(tarea)
+
+        //Obtener y filtrar las tareas del proyecto actual
+        obtenerTareas(proyectoActual.id);
 
         //reiniciar el form
+        guardarTarea({
+            nombre:''
+        })
     }
 
     return (  
@@ -35,6 +68,8 @@ const FormTareas = () => {
                      type="text"
                      name="nombre"
                      placeholder="Nombre Proyecto.."
+                     value={nombre}
+                     onChange={handlChange}
                     />
                 </div>
 
@@ -46,6 +81,8 @@ const FormTareas = () => {
                     />
                 </div>
             </form>
+
+            {errortarea ? <p className="mensaje error">El nombre de la tarea es obligatorio</p> :null}
         </div>
     );
 }
