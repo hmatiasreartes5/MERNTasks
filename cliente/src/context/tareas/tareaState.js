@@ -1,11 +1,15 @@
 import React,{useReducer} from 'react';
 import tareaContext from './tareaContext';
 import tareaReducer from './tareaReducer';
+import uuid from 'uuid';
 
 import {TAREAS_PROYECTO,
         AGREGAR_TAREA,
         VALIDAR_TAREA,
-        ELIMINAR_TAREA
+        ELIMINAR_TAREA,
+        ESTADO_TAREA,
+        TAREA_ACTUAL,
+        ACTUALIZAR_TAREA
 } from '../../types/index';
 
 const TareaState = props => {
@@ -24,7 +28,8 @@ const TareaState = props => {
             {id: 11 ,nombre:'Tarea 1', estado: true, proyectoId: 1}
         ],
         tareasproyecto: null,
-        errortarea: false
+        errortarea: false,
+        tareaseleccionada : null
     }
 
     //crear dispatch y state
@@ -40,6 +45,7 @@ const TareaState = props => {
 
     //AGREGAR TAREA A UN PROYECTO
     const agregarTarea = tarea => {
+        tarea.id= uuid.v4();
         dispatch({
             type: AGREGAR_TAREA,
             payload: tarea
@@ -60,16 +66,45 @@ const TareaState = props => {
             payload: id
         })
     }
+
+    //CAMBIAR EL ESTADO DE UNA TAREA
+    const cambiarEstadoTarea = tarea => {
+        dispatch({
+            type: ESTADO_TAREA,
+            payload: tarea
+        })
+    }
+
+    //FUNCION QUE EXTRAE LA TAREA ACTUAL PARA EDITAR
+    const guardarTareaActual = tarea => {
+        dispatch({
+            type: TAREA_ACTUAL,
+            payload: tarea
+        })
+    }
+
+    //FUNCION QUE VA A EDITAR UNA TAREA
+    const actualizarTarea = tarea =>{
+        dispatch({
+            type: ACTUALIZAR_TAREA,
+            payload: tarea
+        })
+    }
+
     return(
         <tareaContext.Provider
             value={{
                 tareas: state.tareas,
                 tareasproyecto: state.tareasproyecto,
                 errortarea: state.errortarea,
+                tareaseleccionada: state.tareaseleccionada,
                 obtenerTareas,
                 agregarTarea,
                 validarTarea,
-                eliminarTarea
+                eliminarTarea,
+                cambiarEstadoTarea,
+                guardarTareaActual,
+                actualizarTarea
             }}
         >
             {props.children}
