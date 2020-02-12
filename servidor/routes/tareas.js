@@ -14,4 +14,22 @@ router.post('/',
     tareaController.crearTarea
 )
 
+//Obtenemos las tareas por proyecto
+router.get('/',
+    auth,
+    tareaController.obtenerTareas
+)
+
+//Actualizamos una tarea
+router.put('/:id',
+    auth,
+    tareaController.actualizarTarea
+)
+
+//Eliminamos una tarea
+router.delete('/:id',
+    auth,
+    tareaController.eliminarTarea
+)
+
 module.exports = router;
