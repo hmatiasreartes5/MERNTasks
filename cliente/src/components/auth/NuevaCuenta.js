@@ -1,12 +1,16 @@
-import React,{useState,useContext} from 'react';
+import React,{useState,useContext,useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import alertaContext from '../../context/alertas/alertaContext';
+import AuthContext from '../../context/autenticacion/authContext';
 
-const NuevaCuenta = () => {
+const NuevaCuenta = (props) => {
 
     //extraer los valores del context
     const alertContext = useContext(alertaContext);
     const {alerta , mostrarAlerta} = alertContext;
+
+    const authContext = useContext(AuthContext);
+    const {mensaje,autenticado,registrarUsuario} = authContext;
 
       //State de Login
       const [usuario,guardarUsuario] = useState({
@@ -18,6 +22,17 @@ const NuevaCuenta = () => {
 
     //Extraigo valores de usuario
     const {nombre,email, password,confirmar} = usuario;
+
+    //Cuando se produzca un error en el registro de usuario
+    useEffect(()=>{
+        if(autenticado){
+            props.history.push('/proyectos');
+        }
+
+        if(mensaje){
+            mostrarAlerta(mensaje.msg,mensaje.categoria);
+        }
+    },[mensaje,autenticado,props.history])
 
     const onChange = e => {
         guardarUsuario({
@@ -48,6 +63,11 @@ const NuevaCuenta = () => {
         } 
 
         //Pasarlo al action
+        registrarUsuario({
+            nombre,
+            email,
+            password
+        })
     }
 
     return (  
