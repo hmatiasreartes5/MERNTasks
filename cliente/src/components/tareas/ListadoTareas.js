@@ -23,7 +23,7 @@ const ListadoTareas = () => {
 
     //Cuando el usuario de click eliminara el proyecto
     const onclickEliminar = () => {
-        eliminarProyecto(proyectoActual.id)
+        eliminarProyecto(proyectoActual._id)
     }
 
     return (  
