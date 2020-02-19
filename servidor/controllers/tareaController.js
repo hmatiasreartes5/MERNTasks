@@ -43,7 +43,7 @@ exports.crearTarea = async(req,res) => {
 exports.obtenerTareas = async(req,res) => {
 
     //extraer el proyecto
-    const {proyecto} = req.body;
+    const {proyecto} = req.query;
 
     try {
         const existeProyecto = await Proyecto.findById(proyecto);
@@ -57,7 +57,7 @@ exports.obtenerTareas = async(req,res) => {
         }
 
         //obtener las tareas del proyecto
-        const tareas = await Tarea.find({proyecto});
+        const tareas = await Tarea.find({proyecto}).sort({creado: -1});
         res.json({tareas})
     } catch (error) {
         console.log(error);
@@ -85,8 +85,8 @@ exports.actualizarTarea = async (req,res) => {
         }
 
         //Guardar la tarea
-        if(nombre) nuevaTarea.nombre=nombre;
-        if(estado) nuevaTarea.estado=estado;
+        nuevaTarea.nombre=nombre;
+        nuevaTarea.estado=estado;
         tarea = await Tarea.findOneAndUpdate({_id : req.params.id},nuevaTarea,{new:true});
         res.json({tarea});
 
@@ -98,7 +98,7 @@ exports.actualizarTarea = async (req,res) => {
 
 exports.eliminarTarea = async(req,res) => {
     //Extraemos los valores que necesitamos
-    const {proyecto} = req.body;
+    const {proyecto} = req.query;
     try {
         //revisar si la tarea existe
         let tarea = await Tarea.findById(req.params.id);
